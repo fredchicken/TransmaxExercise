@@ -15,6 +15,9 @@ var configuration = builder.Configuration;
 builder.Services.AddDbContext<EagleContext>(options => options.UseSqlServer(configuration.GetConnectionString("SqlDatabase")));
 builder.Services.AddStackExchangeRedisCache(options => { options.Configuration = configuration.GetConnectionString("RedisCache"); });
 builder.Services.AddTransient<IEagleTrafficService, EagleTrafficService>();
+builder.Services.AddScoped<IMessageService>(provider => {
+    return new MessageService(configuration.GetValue<string>("RabbitMQUrl"));
+});
 
 var app = builder.Build();
 

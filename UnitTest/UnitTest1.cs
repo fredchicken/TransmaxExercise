@@ -13,12 +13,14 @@ namespace TransmaxExerciseTest
     public class UnitTest1
     {
         private const string InMemoryConnectionString = "DataSource=:memory:";
+        private const string AMQPUrl = "amqps://dqonzfla:G7Ixgrkr4yybHUg9IXr7ZPZqvx5E9xYT@mouse.rmq5.cloudamqp.com/dqonzfla";
         private readonly SqliteConnection _connection;
 
         private readonly IDistributedCache _cache;
         private readonly DbContextOptions<EagleContext> _dbOptions;
         private readonly EagleContext _dbContext;
         private readonly IEagleTrafficService _service;
+        private readonly IMessageService _messageService;
         private readonly EagleBotsController _controller;
         public UnitTest1()
         {
@@ -42,11 +44,12 @@ namespace TransmaxExerciseTest
 
             //create service
             _service = new EagleTrafficService(_dbContext, _cache);
+            _messageService = new MessageService(AMQPUrl);
             //data feed
             InitialiseDatabase();
 
             //create the controller to be tested
-            _controller = new EagleBotsController(_service);
+            _controller = new EagleBotsController(_service, _messageService);
         }
 
         private void InitialiseDatabase()

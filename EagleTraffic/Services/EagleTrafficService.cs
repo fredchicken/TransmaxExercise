@@ -42,6 +42,8 @@ namespace EagleTraffic.Services
 
         public async Task UpdateEagleBot(EagleBot bot)
         {
+
+
             _dbContext.EagleBots.Update(bot);
             _dbContext.SaveChanges();
 

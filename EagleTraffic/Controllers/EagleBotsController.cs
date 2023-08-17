@@ -11,9 +11,13 @@ namespace EagleTraffic.Controllers
     public class EagleBotsController : ControllerBase
     {
         private readonly IEagleTrafficService _eagleTrafficService;
+        private readonly IMessageService _messageService;
+        private const string messageTopic = "EagleBots";
 
-        public EagleBotsController(IEagleTrafficService eagleTrafficService) { 
-            this._eagleTrafficService = eagleTrafficService;
+        public EagleBotsController(IEagleTrafficService eagleTrafficService, IMessageService messageService)
+        {
+            _eagleTrafficService = eagleTrafficService;
+            _messageService = messageService;
         }
 
         // GET: api/EagleBots
@@ -31,7 +35,9 @@ namespace EagleTraffic.Controllers
             { 
                 RedirectToAction("error");
             }
-            
+
+            _messageService.Send(value, messageTopic);
+
             if (_eagleTrafficService.IsEagleBotExisting(value.Id.Value))
             {
                 await _eagleTrafficService.UpdateEagleBot(value);
